@@ -39,7 +39,7 @@ return {
 				tooltip = "nvim",
 			},
 			display = {
-				theme = "minecraft",
+				theme = "classic",
 				flavor = "light",
 			},
 			idle = {
