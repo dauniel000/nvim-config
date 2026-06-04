@@ -13,6 +13,7 @@ return {
 
 			require("luasnip.loaders.from_vscode").lazy_load()
 
+			ls.filetype_extend("luau", { "lua" })
 			ls.filetype_extend("javascript", { "jsdoc" })
 			ls.filetype_extend("htmldjango", { "html", "django", "alpinejs", "htmx" })
 

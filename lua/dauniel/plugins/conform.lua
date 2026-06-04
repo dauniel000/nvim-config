@@ -11,6 +11,7 @@ return {
 				c = { "clang-format" },
 				cpp = { "clang-format" },
 				lua = { "stylua" },
+				luau = { "stylua" },
 				go = { "gofmt" },
 				odin = { "odinfmt" },
 				html = { "prettier" },
@@ -19,6 +20,10 @@ return {
 				typescript = { "prettier" },
 				elixir = { "mix" },
 				python = { "ruff_format", "ruff_organize_imports" },
+				terraform = { "terraform_fmt" },
+				tf = { "terraform_fmt" },
+				yaml = { "prettier" },
+				json = { "prettier" },
 			},
 			formatters = {
 				["clang-format"] = {

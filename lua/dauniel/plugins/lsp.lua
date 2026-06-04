@@ -27,16 +27,50 @@ return {
 			cmp_lsp.default_capabilities()
 		)
 
+		local function is_rojo_project(path)
+			return vim.fs.root(path or 0, function(name)
+				return name:match(".+%.project%.json$")
+			end) ~= nil
+		end
+
+		vim.filetype.add({
+			extension = {
+				luau = "luau",
+
+				lua = function(path)
+					if path:match("%.nvim%.lua$") then
+						return "lua"
+					end
+
+					if is_rojo_project(path) then
+						return "luau"
+					end
+
+					return "lua"
+				end,
+			},
+		})
+
 		require("fidget").setup({})
 		require("mason").setup()
 		require("mason-lspconfig").setup({
 			ensure_installed = {
 				"lua_ls",
+				"luau_lsp",
 				"rust_analyzer",
 				"gopls",
 				"vtsls",
 				"tailwindcss",
 				"html",
+				"terraformls",
+				"tflint",
+				"dockerls",
+				"docker_compose_language_service",
+				"helm_ls",
+				"yamlls",
+			},
+			automatic_enable = {
+				exclude = { "luau_lsp" },
 			},
 			handlers = {
 				function(server_name) -- default handler (optional)
@@ -67,27 +101,25 @@ return {
 					vim.g.zig_fmt_parse_errors = 0
 					vim.g.zig_fmt_autosave = 0
 				end,
-				["lua_ls"] = function()
-					local lspconfig = require("lspconfig")
 
+				["lua_ls"] = function()
+					if is_rojo_project() then
+						return
+					end
+
+					local lspconfig = require("lspconfig")
 					lspconfig.lua_ls.setup({
 						capabilities = capabilities,
 						settings = {
 							Lua = {
-								runtime = {
-									version = "LuaJIT",
-								},
-								diagnostics = {
-									globals = { "vim" },
-								},
+								runtime = { version = "LuaJIT" },
+								diagnostics = { globals = { "vim" } },
 								workspace = {
 									library = vim.api.nvim_get_runtime_file("", true),
 									checkThirdParty = false,
 								},
 								format = {
 									enable = true,
-									-- Put format options here
-									-- NOTE: the value should be STRING!!
 									defaultConfig = {
 										indent_style = "space",
 										indent_size = "2",
@@ -97,6 +129,7 @@ return {
 						},
 					})
 				end,
+
 				["tailwindcss"] = function()
 					local lspconfig = require("lspconfig")
 					lspconfig.tailwindcss.setup({
@@ -113,6 +146,78 @@ return {
 							"svelte",
 							"heex",
 							"htmldjango",
+						},
+					})
+				end,
+
+				["terraformls"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.terraformls.setup({
+						capabilities = capabilities,
+						filetypes = { "terraform", "terraform-vars", "tf" },
+					})
+				end,
+
+				["tflint"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.tflint.setup({
+						capabilities = capabilities,
+					})
+				end,
+
+				["dockerls"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.dockerls.setup({
+						capabilities = capabilities,
+					})
+				end,
+
+				["docker_compose_language_service"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.docker_compose_language_service.setup({
+						capabilities = capabilities,
+						filetypes = { "yaml.docker-compose" },
+						-- Rozpoznaje docker-compose*.yml automatycznie
+						root_dir = lspconfig.util.root_pattern(
+							"docker-compose.yml",
+							"docker-compose.yaml",
+							"compose.yml",
+							"compose.yaml"
+						),
+					})
+				end,
+
+				["helm_ls"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.helm_ls.setup({
+						capabilities = capabilities,
+						settings = {
+							["helm-ls"] = {
+								yamlls = {
+									path = "yaml-language-server",
+								},
+							},
+						},
+					})
+				end,
+
+				["yamlls"] = function()
+					local lspconfig = require("lspconfig")
+					lspconfig.yamlls.setup({
+						capabilities = capabilities,
+						settings = {
+							yaml = {
+								schemas = {
+									["https://json.schemastore.org/github-workflow.json"] = "/.github/workflows/*",
+									["https://raw.githubusercontent.com/instrumenta/kubernetes-json-schema/master/v1.18.0-standalone-strict/all.json"] = "/*.k8s.{yml,yaml}",
+									["https://json.schemastore.org/kustomization.json"] = "kustomization.{yml,yaml}",
+									["https://json.schemastore.org/chart.json"] = "Chart.{yml,yaml}",
+									["https://json.schemastore.org/taskfile.json"] = "Taskfile*.{yml,yaml}",
+								},
+								validate = true,
+								completion = true,
+								hover = true,
+							},
 						},
 					})
 				end,
