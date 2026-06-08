@@ -14,18 +14,19 @@ return {
 			sourcemap = {
 				enabled = true,
 				autogenerate = true,
-				rojo_project_file = "default.project.json", -- zmień jeśli masz inną nazwę
+				generator_cmd = { "rojo", "sourcemap", "default.project.json", "--output", "sourcemap.json" },
+				rojo_project_file = "default.project.json",
 				sourcemap_file = "sourcemap.json",
 				include_non_scripts = true,
 			},
 
 			plugin = {
-				enabled = false, -- ustaw true tylko jeśli używasz Studio Companion Plugin
+				enabled = false,
 				port = 3667,
 			},
 
 			server = {
-				path = "luau-lsp", -- Mason powinien dodać to do PATH
+				-- path = os.getenv("USERPROFILE") .. "\\.rokit\\bin\\luau-lsp.exe",  -- for window
 			},
 		},
 	},
