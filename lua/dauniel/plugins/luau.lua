@@ -26,7 +26,7 @@ return {
 			},
 
 			server = {
-				-- path = os.getenv("USERPROFILE") .. "\\.rokit\\bin\\luau-lsp.exe",  -- for window
+				path = os.getenv("USERPROFILE") .. "\\.rokit\\bin\\luau-lsp.exe", -- for window
 			},
 		},
 	},

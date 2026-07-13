@@ -28,11 +28,10 @@ return {
 			},
 			buttons = {
 				{
-					label = "Wieża Babel",
-					url = "https://www.youtube.com/watch?v=SuQhkNyOQro",
+					label = "cweldev.xyz",
+					url = "https://cweldev.xyz/",
 				},
 			},
 		})
 	end,
 }
-
